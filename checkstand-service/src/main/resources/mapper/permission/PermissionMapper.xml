@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cloudwing.checkstand.permission.mapper.PermissionMapper" >
+  <resultMap id="BaseResultMap" type="com.cloudwing.checkstand.permission.entity.Permission" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="p_id" property="pId" jdbcType="INTEGER" />
+    <result column="is_menu" property="isMenu" jdbcType="BIT" />
+    <result column="is_public" property="isPublic" jdbcType="BIT" />
+    <result column="sort_code" property="sortCode" jdbcType="TINYINT" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="enable_mark" property="enableMark" jdbcType="BIT" />
+  </resultMap>
+  <!--<sql id="Base_Column_List" >
+    id, name, p_id, is_menu, is_public, sort_code, url, enable_mark
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from permission
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from permission
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.cloudwing.checkstand.permission.entity.Permission" >
+    insert into permission (id, name, p_id, 
+      is_menu, is_public, sort_code, 
+      url, enable_mark)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{pId,jdbcType=INTEGER}, 
+      #{isMenu,jdbcType=BIT}, #{isPublic,jdbcType=BIT}, #{sortCode,jdbcType=TINYINT}, 
+      #{url,jdbcType=VARCHAR}, #{enableMark,jdbcType=BIT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cloudwing.checkstand.permission.entity.Permission" >
+    insert into permission
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="pId != null" >
+        p_id,
+      </if>
+      <if test="isMenu != null" >
+        is_menu,
+      </if>
+      <if test="isPublic != null" >
+        is_public,
+      </if>
+      <if test="sortCode != null" >
+        sort_code,
+      </if>
+      <if test="url != null" >
+        url,
+      </if>
+      <if test="enableMark != null" >
+        enable_mark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="pId != null" >
+        #{pId,jdbcType=INTEGER},
+      </if>
+      <if test="isMenu != null" >
+        #{isMenu,jdbcType=BIT},
+      </if>
+      <if test="isPublic != null" >
+        #{isPublic,jdbcType=BIT},
+      </if>
+      <if test="sortCode != null" >
+        #{sortCode,jdbcType=TINYINT},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="enableMark != null" >
+        #{enableMark,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cloudwing.checkstand.permission.entity.Permission" >
+    update permission
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="pId != null" >
+        p_id = #{pId,jdbcType=INTEGER},
+      </if>
+      <if test="isMenu != null" >
+        is_menu = #{isMenu,jdbcType=BIT},
+      </if>
+      <if test="isPublic != null" >
+        is_public = #{isPublic,jdbcType=BIT},
+      </if>
+      <if test="sortCode != null" >
+        sort_code = #{sortCode,jdbcType=TINYINT},
+      </if>
+      <if test="url != null" >
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="enableMark != null" >
+        enable_mark = #{enableMark,jdbcType=BIT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cloudwing.checkstand.permission.entity.Permission" >
+    update permission
+    set name = #{name,jdbcType=VARCHAR},
+      p_id = #{pId,jdbcType=INTEGER},
+      is_menu = #{isMenu,jdbcType=BIT},
+      is_public = #{isPublic,jdbcType=BIT},
+      sort_code = #{sortCode,jdbcType=TINYINT},
+      url = #{url,jdbcType=VARCHAR},
+      enable_mark = #{enableMark,jdbcType=BIT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>-->
+  <select id="listMenusByUserId" resultMap="BaseResultMap">
+    select DISTINCT(p.id), p.p_id, p.name, p.url, p.sort_code
+    from permission p, role_permission rp, user_role ur
+  	where uid = #{userId,jdbcType=INTEGER}
+  	and p.id = rp.pid
+  	and rp.rid = ur.rid
+    and p.is_menu = 1
+  </select>
+  <select id="listUrlByUserId" resultType="java.lang.String">
+    select DISTINCT(p.url) from permission p, role_permission rp, user_role ur
+  	where uid = #{userId,jdbcType=INTEGER}
+  	and p.id = rp.pid
+  	and rp.rid = ur.rid
+  </select>
+</mapper>

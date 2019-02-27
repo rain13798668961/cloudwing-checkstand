@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cloudwing.checkstand.user.mapper.UserOfficeMapper" >
+  <resultMap id="BaseResultMap" type="com.cloudwing.checkstand.user.entity.UserOffice" >
+    <result column="uid" property="uid" jdbcType="INTEGER" />
+    <result column="oid" property="oid" jdbcType="INTEGER" />
+  </resultMap>
+  <insert id="insert" parameterType="com.cloudwing.checkstand.user.entity.UserOffice" >
+    insert into user_office (uid, oid)
+    values (#{uid,jdbcType=INTEGER}, #{oid,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cloudwing.checkstand.user.entity.UserOffice" >
+    insert into user_office
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="uid != null" >
+        uid,
+      </if>
+      <if test="oid != null" >
+        oid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="uid != null" >
+        #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="oid != null" >
+        #{oid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+
+  <!--根据userId查找对应的oid-->
+  <select id="selectOidByUid" resultType="java.lang.Integer" >
+    SELECT oid FROM user_office WHERE uid = #{userId}
+  </select>
+
+  <!--根据Integer[] oids查找对应的uid-->
+  <select id="selectUidByOid" resultType="java.lang.Integer" >
+    SELECT DISTINCT (uid) FROM user_office
+    <where>
+      <if test="oids != null and oids.length>0">
+        oid IN
+        <foreach collection="oids" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </where>
+  </select>
+
+  <!--根据userId And office删除一条数据-->
+  <delete id="removeByUserIdAndOfficeId" >
+    DELETE FROM user_office
+    WHERE uid = #{userId} and oid = #{officeId}
+  </delete>
+
+  <!--根据userId And office增加一条数据-->
+  <insert id="saveByUserIdAndOfficeId" >
+    INSERT INTO user_office(uid, oid) VALUES(#{userId}, #{officeId})
+  </insert>
+</mapper>

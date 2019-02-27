@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cloudwing.checkstand.office.mapper.OfficeMerchantMapper" >
+  <resultMap id="BaseResultMap" type="com.cloudwing.checkstand.office.entity.OfficeMerchant" >
+    <result column="oid" property="oid" jdbcType="INTEGER" />
+    <result column="mid" property="mid" jdbcType="INTEGER" />
+  </resultMap>
+  <insert id="insert" parameterType="com.cloudwing.checkstand.office.entity.OfficeMerchant" >
+    insert into office_merchant (oid, mid)
+    values (#{oid,jdbcType=INTEGER}, #{mid,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cloudwing.checkstand.office.entity.OfficeMerchant" >
+    insert into office_merchant
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="oid != null" >
+        oid,
+      </if>
+      <if test="mid != null" >
+        mid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="oid != null" >
+        #{oid,jdbcType=INTEGER},
+      </if>
+      <if test="mid != null" >
+        #{mid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+
+  <!--根据Integer[] oids查找对应的mid-->
+  <select id="selectMidByOid" resultType="java.lang.Integer" >
+    SELECT DISTINCT (om.mid) FROM office_merchant om
+    <where>
+      <if test="oids != null and oids.length>0">
+        oid IN
+        <foreach collection="oids" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </where>
+  </select>
+  <select id="listMidByOid" resultType="Integer">
+    select mid
+    from office_merchant
+    where oid = #{officeId,jdbcType=INTEGER}
+  </select>
+</mapper>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="checkstand-common" />
+        <module name="checkstand-consumer" />
+        <module name="checkstand-service" />
+        <module name="checkstand-shiro" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="checkstand-pay-comsumer" target="1.8" />
+      <module name="checkstand-pay-consumer" target="1.8" />
+      <module name="cloudwing-checkstand-service" target="1.5" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cloudwing.checkstand.user.mapper.UserMapper" >
+  <resultMap id="BaseResultMap" type="com.cloudwing.checkstand.user.entity.User" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="company_id" property="companyId" jdbcType="INTEGER" />
+    <result column="platform_user_id" property="platformUserId" jdbcType="INTEGER" />
+    <result column="platform_company_id" property="platformCompanyId" jdbcType="INTEGER" />
+    <result column="role_id" property="roleId" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="account" property="account" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="avatar" property="avatar" jdbcType="VARCHAR" />
+    <result column="avatar_type" property="avatarType" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="note" property="note" jdbcType="VARCHAR" />
+    <result column="create_at" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="update_at" property="updateAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, company_id, platform_user_id, platform_company_id, role_id, name, account, password, 
+    phone, email, avatar, avatar_type, status, note, create_at, update_at
+  </sql>
+  <!--<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from user
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.cloudwing.checkstand.user.entity.User" >
+    insert into user (id, company_id, platform_user_id, 
+      platform_company_id, role_id, name, 
+      account, password, phone, 
+      email, avatar, avatar_type, 
+      status, note, create_at, 
+      update_at)
+    values (#{id,jdbcType=INTEGER}, #{companyId,jdbcType=INTEGER}, #{platformUserId,jdbcType=INTEGER}, 
+      #{platformCompanyId,jdbcType=INTEGER}, #{roleId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, 
+      #{account,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
+      #{email,jdbcType=VARCHAR}, #{avatar,jdbcType=VARCHAR}, #{avatarType,jdbcType=VARCHAR}, 
+      #{status,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR}, #{createAt,jdbcType=TIMESTAMP}, 
+      #{updateAt,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cloudwing.checkstand.user.entity.User" >
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="companyId != null" >
+        company_id,
+      </if>
+      <if test="platformUserId != null" >
+        platform_user_id,
+      </if>
+      <if test="platformCompanyId != null" >
+        platform_company_id,
+      </if>
+      <if test="roleId != null" >
+        role_id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="account != null" >
+        account,
+      </if>
+      <if test="password != null" >
+        password,
+      </if>
+      <if test="phone != null" >
+        phone,
+      </if>
+      <if test="email != null" >
+        email,
+      </if>
+      <if test="avatar != null" >
+        avatar,
+      </if>
+      <if test="avatarType != null" >
+        avatar_type,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="note != null" >
+        note,
+      </if>
+      <if test="createAt != null" >
+        create_at,
+      </if>
+      <if test="updateAt != null" >
+        update_at,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="companyId != null" >
+        #{companyId,jdbcType=INTEGER},
+      </if>
+      <if test="platformUserId != null" >
+        #{platformUserId,jdbcType=INTEGER},
+      </if>
+      <if test="platformCompanyId != null" >
+        #{platformCompanyId,jdbcType=INTEGER},
+      </if>
+      <if test="roleId != null" >
+        #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="account != null" >
+        #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="avatar != null" >
+        #{avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="avatarType != null" >
+        #{avatarType,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null" >
+        #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateAt != null" >
+        #{updateAt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cloudwing.checkstand.user.entity.User" >
+    update user
+    <set >
+      <if test="companyId != null" >
+        company_id = #{companyId,jdbcType=INTEGER},
+      </if>
+      <if test="platformUserId != null" >
+        platform_user_id = #{platformUserId,jdbcType=INTEGER},
+      </if>
+      <if test="platformCompanyId != null" >
+        platform_company_id = #{platformCompanyId,jdbcType=INTEGER},
+      </if>
+      <if test="roleId != null" >
+        role_id = #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="account != null" >
+        account = #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="avatar != null" >
+        avatar = #{avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="avatarType != null" >
+        avatar_type = #{avatarType,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null" >
+        note = #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        create_at = #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateAt != null" >
+        update_at = #{updateAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cloudwing.checkstand.user.entity.User" >
+    update user
+    set company_id = #{companyId,jdbcType=INTEGER},
+      platform_user_id = #{platformUserId,jdbcType=INTEGER},
+      platform_company_id = #{platformCompanyId,jdbcType=INTEGER},
+      role_id = #{roleId,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
+      account = #{account,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      avatar = #{avatar,jdbcType=VARCHAR},
+      avatar_type = #{avatarType,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      note = #{note,jdbcType=VARCHAR},
+      create_at = #{createAt,jdbcType=TIMESTAMP},
+      update_at = #{updateAt,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>-->
+
+  <!--根据账号密码查找用户，用于登录校验-->
+  <select id="findByAccountAndPassword" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from user
+    where account = #{account,jdbcType=VARCHAR}
+    and password = #{password,jdbcType=VARCHAR}
+  </select>
+
+  <select id="findByPlatformUserId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from user
+    where platform_user_id = #{platformUserId,jdbcType=INTEGER}
+  </select>
+
+  <!--根据companyId查找对应的数据用UserQueryVo接收-->
+  <select id="listUserQueryVoByCompanyId" resultType="com.cloudwing.checkstand.user.vo.UserQueryVo">
+    SELECT u.id, u.company_id, c.name AS company_name, u.platform_user_id, u.platform_company_id, u.role_id, u.name, u.account, u.password,
+      u.phone, u.email, u.avatar, u.avatar_type, u.status, u.note, u.create_at, u.update_at
+      FROM USER u LEFT JOIN company c ON u.company_id = c.id WHERE u.company_id = #{companyId}
+  </select>
+
+  <!--根据Integer[] uids查询对应的数据用UserQueryVo接收-->
+  <select id="listUserQueryVoByUid" resultType="com.cloudwing.checkstand.user.vo.UserQueryVo" >
+    SELECT u.id, u.company_id, c.name AS company_name, u.platform_user_id, u.platform_company_id, u.role_id, u.name, u.account, u.password,
+      u.phone, u.email, u.avatar, u.avatar_type, u.status, u.note, u.create_at, u.update_at
+      FROM USER u LEFT JOIN company c ON u.company_id = c.id
+    <where>
+      <if test="uids != null and uids.length>0">
+        u.id IN
+        <foreach collection="uids" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </where>
+  </select>
+
+  <!--查询所有user数据用UserQueryVo接收-->
+  <select id="listUserQueryVo" resultType="com.cloudwing.checkstand.user.vo.UserQueryVo" >
+    SELECT u.id, u.company_id, c.name as company_name, u.platform_user_id, u.platform_company_id, u.role_id, u.name, u.account, u.password,
+      u.phone, u.email, u.avatar, u.avatar_type, u.status, u.note, u.create_at, u.update_at
+    FROM user u LEFT JOIN company c ON u.company_id = c.id
+  </select>
+
+  <!--根据id查询所有user数据用UserQueryVo接收-->
+  <select id="getUserQueryVoById" resultType="com.cloudwing.checkstand.user.vo.UserQueryVo" >
+    SELECT u.id, u.company_id, c.name as company_name, u.platform_user_id, u.platform_company_id, u.role_id, u.name, u.account, u.password,
+      u.phone, u.email, u.avatar, u.avatar_type, u.status, u.note, u.create_at, u.update_at
+    FROM user u LEFT JOIN company c ON u.company_id = c.id WHERE u.id = #{id}
+  </select>
+</mapper>

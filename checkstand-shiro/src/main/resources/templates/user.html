@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <title>table模块快速使用</title>
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+</head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card" style="margin-bottom: 4px;">
+                <div class="layui-card-body page-title" style="/* height: 60px; */">
+                    <h2 style="/* margin-top: 18px; */">用户管理列表</h2>
+                </div>
+            </div>
+            <div class="layui-card">
+                <div class="layui-card-header" style="height: 70px"></div>
+                <div class="layui-card-body">
+                    <table class="layui-hide" id="table_user_list" lay-filter="table_user"></table>
+                    <script type="text/html" id="operateNape">
+                        <a type="button" class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+                        <a type="button" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="empower" lay-text="支付页面">赋权</a>
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--赋权跳出层table-->
+<div id="popups-operate" style="display:none;padding: 15px;">
+    <table class="" id="operate-table" lay-filter="operate-table" style="display:none;">
+
+    </table>
+</div>
+
+<!-- 定义是否状态的开关 -->
+<script id="switchTpl" type="text/html">
+    <input type="checkbox"  name = "ifKey"   value = {{d.id}} lay-skin="switch" lay-text="开启|关闭" lay-filter="ifKeyDemo" {{ d.status == 'Y' ? 'checked' : '' }}>
+</script>
+<!--定义关联状态的开关-->
+<script id="relevanceSwitch" type="text/html">
+    <input type="checkbox" name = "isRelevance" value={{d.officeId}} lay-skin="switch" class = "isRelevance" data-id="{{d.id}}" lay-text="开启|关闭" lay-filter="isRelevance" {{ d.id ? 'checked' : '' }}>
+</script>
+
+<script src="/layuiadmin/layui/layui.js" ></script>
+<!-- 业务相关js -->
+<script src='/js/biz/config.js' type="text/javascript"></script>
+<script th:inline="none">
+    layui.config({
+        base: '../layuiadmin/'
+    }).extend({index:'lib/index'})
+        .use(['index', 'table','form','jquery','system','layer'], function(){
+        var table = layui.table;
+        var form = layui.form;
+        var $ = layui.$;
+        var system = layui.system;
+        var layer = layui.layer;
+
+        var osUserId;
+        table.render({
+            elem: '#table_user_list'
+            ,height: 312
+            ,url: Routes.userListUrl //数据接口
+            ,method: 'POST'
+            ,page: {
+                limits: [10, 15, 20, 30]
+            }
+            ,cols: [[ //表头
+                {field:"id", hide: true}
+                ,{field:'serialNumber', width:50, title: '序号',fixed: 'left',type:'numbers'}
+                ,{field: 'name', title: '用户名昵称', width:130, fixed: 'left', align: "center"}
+                ,{field: 'account', title: '账号', width:130, align: "center"}
+                ,{field: 'companyName', title: '所属企业', width:130, align: 'center'}
+                ,{field: 'description', title: '所属权限', width:130, align: 'center'}
+                ,{field: 'phone', title: '联系电话', width: 130, align: "center"}
+                ,{field: 'email', title: '邮箱', width: 180, align: "center"}
+                ,{field: 'status', title: '状态', width: 110,templet: '#switchTpl',unresize : true, sort: true, align: "center"}
+                ,{field: 'note', title: '备注', minWidth: 80, align: "center"}
+                ,{fixed: 'right',title:"操作", align:'center', toolbar: '#operateNape',width:250}
+            ]]
+            ,parseData: function(res) {
+                return {
+                    "code": res.status,
+                    "msg": res.msg,
+                    "count": res.data.total,
+                    "data": res.data.list
+                };
+            }
+            ,response: {
+                statusCode: '10000' //规定成功的状态码，默认：0
+            }
+        });
+
+
+        // 监听外层状态开关
+        form.on('switch(ifKeyDemo)', function(obj){
+            // 获取当前状态的Id
+            var id = obj.elem.value;
+            var status = obj.elem.checked == true ? 'Y' : 'N';
+            var checked = obj.elem.checked;
+            obj.elem.checked = !checked;
+            form.render('checkbox');
+            //更新数据
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                url: Routes.userUpdateUrl,
+                data: {"id": id, "status":status},
+                error: function(data){
+                    layer.msg('操作失败');
+                },
+                success: function(data){
+                    if (data.status == "10000"){
+                        obj.elem.checked = checked;
+                        form.render('checkbox');
+                        layer.msg('操作成功');
+                    } else if (data.status == "30000") {
+                        layer.msg('您没有操作权限');
+                    } else {
+                        layer.msg('10000操作失败');
+                    }
+                },
+            });
+
+        });
+
+        // 监听内层关联开关
+        form.on('switch(isRelevance)', function(obj){
+            console.log("osUserId: " + osUserId);
+            var officeId = obj.elem.value;
+            var checked = obj.elem.checked;
+            obj.elem.checked = !checked;
+            form.render('checkbox');
+            //更新数据
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                url: Routes.userOperateUpdateUrl,
+                data: {"userId": osUserId, "officeId": officeId, "checked": checked},
+                error: function(data){
+                    layer.msg('操作失败');
+                },
+                success: function(data){
+                    if (data.status == "10000"){
+                        obj.elem.checked = checked;
+                        form.render('checkbox');
+                        layer.msg('操作成功');
+                    } else if (data.status == "30000") {
+                        layer.msg('您没有操作权限');
+                    } else {
+                        layer.msg('10000操作失败');
+                    }
+                },
+            });
+
+        });
+
+        // 监听操作项的赋权
+        table.on('tool(table_user)', function(obj) {
+            var data = obj.data;    // 获取当前行的数据
+            var userId = data['id'];
+            var companyId = data['companyId'];
+            osUserId = userId;
+            var event = obj.event;
+            if (event == 'empower') {
+                system.open({
+                    type: 1
+                    ,id: 'operate'
+                    ,title: '用户关联现场'
+                    , area: '720px'
+                    ,content: $('#popups-operate')
+                    ,yes: function(index, layero){
+                        layer.close(index); //如果设定了yes回调，需进行手工关闭
+                    }
+                });
+
+                table.render({
+                    elem: '#operate-table'
+                    ,height: 312
+                    ,where: {'userId': userId, 'companyId': companyId}
+                    ,url: Routes.userOperateUrl //数据接口
+                    ,page: {
+                        limits: [10, 15, 20, 30]
+                    }
+                    ,cols: [[
+                        {field:"id", hide: true}
+                        ,{field:'serialNumber', width:50, title: '序号',fixed: 'left',type:'numbers'}
+                        ,{field: 'companyName', title: '所有企业名称', width:130 }
+                        ,{field: 'name', title: '办公现场名称', width:130}
+                        // ,{field: 'address', title: '办公现场地址', width:130}
+                        ,{field: 'userId', title: '关联', templet: '#relevanceSwitch', unresize : true, align: "center" , width: 135, sort: true}
+                    ]]
+                    ,parseData: function(res) {
+                        return {
+                            "code": res.status,
+                            "msg": res.msg,
+                            "count": res.data.total,
+                            "data": res.data.list
+                        };
+                    }
+                    ,response: {
+                        statusCode: '10000' //规定成功的状态码，默认：0
+                    }
+                });
+            }
+        });
+    });
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cloudwing.checkstand.trade.mapper.PaymentOrderRecordMapper" >
+  <resultMap id="BaseResultMap" type="com.cloudwing.checkstand.trade.entity.PaymentOrderRecord" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="order_id" property="orderId" jdbcType="INTEGER" />
+    <result column="operation" property="operation" jdbcType="VARCHAR" />
+    <result column="op_method" property="opMethod" jdbcType="VARCHAR" />
+    <result column="note" property="note" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.cloudwing.checkstand.trade.entity.PaymentOrderRecord" extends="BaseResultMap" >
+    <result column="params" property="params" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, order_id, operation, op_method, note
+  </sql>
+  <sql id="Blob_Column_List" >
+    params
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from payment_order_record
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from payment_order_record
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.cloudwing.checkstand.trade.entity.PaymentOrderRecord" >
+    insert into payment_order_record (id, order_id, operation, 
+      op_method, note, params
+      )
+    values (#{id,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, #{operation,jdbcType=VARCHAR}, 
+      #{opMethod,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR}, #{params,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.cloudwing.checkstand.trade.entity.PaymentOrderRecord" >
+    insert into payment_order_record
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="orderId != null" >
+        order_id,
+      </if>
+      <if test="operation != null" >
+        operation,
+      </if>
+      <if test="opMethod != null" >
+        op_method,
+      </if>
+      <if test="note != null" >
+        note,
+      </if>
+      <if test="params != null" >
+        params,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="orderId != null" >
+        #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="operation != null" >
+        #{operation,jdbcType=VARCHAR},
+      </if>
+      <if test="opMethod != null" >
+        #{opMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null" >
+        #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="params != null" >
+        #{params,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cloudwing.checkstand.trade.entity.PaymentOrderRecord" >
+    update payment_order_record
+    <set >
+      <if test="orderId != null" >
+        order_id = #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="operation != null" >
+        operation = #{operation,jdbcType=VARCHAR},
+      </if>
+      <if test="opMethod != null" >
+        op_method = #{opMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null" >
+        note = #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="params != null" >
+        params = #{params,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.cloudwing.checkstand.trade.entity.PaymentOrderRecord" >
+    update payment_order_record
+    set order_id = #{orderId,jdbcType=INTEGER},
+      operation = #{operation,jdbcType=VARCHAR},
+      op_method = #{opMethod,jdbcType=VARCHAR},
+      note = #{note,jdbcType=VARCHAR},
+      params = #{params,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cloudwing.checkstand.trade.entity.PaymentOrderRecord" >
+    update payment_order_record
+    set order_id = #{orderId,jdbcType=INTEGER},
+      operation = #{operation,jdbcType=VARCHAR},
+      op_method = #{opMethod,jdbcType=VARCHAR},
+      note = #{note,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

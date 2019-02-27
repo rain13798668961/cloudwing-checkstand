@@ -1,0 +1,726 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="../layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../layuiadmin/style/admin.css" media="all">
+</head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card" style="margin-bottom: 4px;">
+                <div class="layui-card-body page-title" style="/* height: 60px; */">
+                    <h2 style="/* margin-top: 18px; */">现场列表</h2>
+                </div>
+            </div>
+            <div class="layui-card">
+                <div class="layui-card-header" style="height: 70px">
+                    <div class="layui-inline" style="width:100%;">
+                        <div class="" style="width:100%">
+                            <form class="layui-form" id="formSearch" style="left: 0px;position: absolute;">
+                                <div class="layui-input-inline" style="width: 100px;">
+                                    <input type="text" name="search-name" placeholder="查询名称" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-input-inline" style="width: 100px;">
+                                    <input type="text" name="search-short-name" placeholder="查询代码" autocomplete="off" class="layui-input">
+                                </div>
+                                <!--<div class="layui-input-inline" style="width: 165px;margin-right: 10px;">
+                                    <input type="text" name="search-order-no" placeholder="订单编号" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-input-inline" style="width: 100px;margin-right: 10px;">
+                                    &lt;!&ndash;input type="text" name="search-status" placeholder="订单状态" autocomplete="off" class="layui-input">&ndash;&gt;
+                                    <select name="search-select-status">
+                                        <option value>订单状态</option>
+                                        <option value="0">新建</option>
+                                        <option value="1">支付成功</option>
+                                        <option value="2">支付中</option>
+                                        <option value="3">支付失败</option>
+                                        <option value="4">退款中</option>
+                                        <option value="4">已退款</option>
+                                    </select>
+                                </div>
+                                <div class="layui-input-inline" style="width: 100px;">
+                                    &lt;!&ndash;<input type="text" name="search-start-time" placeholder="创建时间起始" autocomplete="off" class="layui-input">&ndash;&gt;
+                                    <input type="text" name="search-start-time" id="search-start-time" lay-verify="date" placeholder="创建时间起始" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-input-inline" style="width: 100px;margin-right: 10px;">
+                                    &lt;!&ndash;<input type="text" name="search-end-time" placeholder="创建时间结束" autocomplete="off" class="layui-input">&ndash;&gt;
+                                    <input type="text" name="search-end-time" id="search-end-time" lay-verify="date" placeholder="创建时间结束" autocomplete="off" class="layui-input">
+                                </div>-->
+                                <div class="layui-input-inline" style="width: 80px;">
+                                    <a class="layui-btn layui-btn-normal search">查询</a>
+                                </div>
+                                <!--<div class="layui-input-inline" style="width: 100px;">
+                                    <a class="layui-btn layui-btn-normal clear">清空</a>
+                                </div>-->
+                            </form>
+                            <div style="right: 0px;position: absolute;">
+                                <div class="layui-input-inline" style="width: 100px;">
+                                    <a class="layui-btn add-provider">新建</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-card-body">
+                    <table class="layui-hide" id="LAY_table_user" lay-filter="table_user"></table>
+                    <script type="text/html" id="barDemo">
+                        <a class="layui-btn layui-btn-xs edit" lay-event="edit">编辑</a>
+                        <a class="layui-btn layui-btn-normal layui-btn-xs pay" lay-event="relate" lay-text="关联商户">关联商户</a>
+                        <!--<a class="layui-btn layui-btn-normal layui-btn-xs detail" lay-event="detail" lay-text="{{d.name}}的方法" lay-href='http://rpc.cw.com/admin/provider/detail/list?provider_id={{d.id}}'>方法</a>-->
+                        <!--<a class="layui-btn layui-btn-normal layui-btn-xs account" lay-event="account" lay-text="对账">对账</a>
+                        <a class="layui-btn layui-btn-normal layui-btn-xs voucher" lay-event="voucher" lay-text="支付凭证">支付凭证</a>-->
+                        <!--<a class="layui-btn layui-btn-danger layui-btn-xs del" lay-event="del">取消</a>-->
+                    </script>
+                    <script type="text/html" id="status-tpl">
+                        {{#  if(d.status === 1){ }}
+                        <span style="color: #32d20a;">已开启</span>
+                        {{#  } else { }}
+                        <span style="color: #F581B1;">已禁用</span>
+                        {{#  } }}
+                    </script>
+                    <script type="text/html" id="is_system-tpl">
+                        {{#  if(d.is_system === 1){ }}
+                        <span style="color: #32d20a;">系统内置</span>
+                        {{#  } else { }}
+                        <span style="color: #F581B1;">公开</span>
+                        {{#  } }}
+                    </script>
+                </div>
+            </div>
+
+            <div class="provider-edit-title" style="display: none">
+                <fieldset class="layui-elem-field layui-field-title" style="height: 50px;margin-top:5px">
+                    <legend>编辑现场资料</legend>
+                </fieldset>
+            </div>
+            <!--<div class="provider-edit-body" style="display: none">
+                <div class="layui-row" style="width:800px;margin-top: 20px">
+                    <div class="layui-col-md12">
+                        <form class="layui-form" id="formEdit">
+                            <input type="text" name="id" lay-verify="required" autocomplete="off" class="layui-input layui-hide">
+                            <div class="layui-form-item">
+                                <div class="layui-col-md10 layui-inline">
+                                    <label class="layui-form-label">提供者名称</label>
+                                    <div class="layui-col-md8">
+                                        <input type="text" name="name" lay-verify="required" autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-col-md10 layui-inline">
+                                    <label class="layui-form-label">key</label>
+                                    <div class="layui-col-md8">
+                                        <input type="text" name="key" lay-verify="required|capitalize|max10"  autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">状态</label>
+                                    <div class="layui-input-block">
+                                        <input type="checkbox" name="status" lay-skin="switch" lay-text="ON|OFF">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">系统内置</label>
+                                    <div class="layui-input-block">
+                                        <input type="checkbox" name="is_system" lay-skin="switch" lay-text="内置|公开">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <div class="layui-col-md10 layui-inline">
+                                    <label class="layui-form-label">备注</label>
+                                    <div class="layui-col-md8">
+                                        <textarea class="layui-textarea" name="remark"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <div class="layui-col-md7 layui-inline">
+                                    <label class="layui-form-label">token</label>
+                                    <div class="layui-col-md8">
+                                        <input type="text" name="token" lay-verify="required" autocomplete="off" class="layui-input layui-disabled" disabled >
+                                    </div>
+                                </div>
+                                <div class="layui-col-md2">
+                                    <a type="button" style="margin-top: 3px" class="layui-btn layui-btn-sm reset-token">重新生成</a>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <div class="layui-input-block">
+                                    <a class="layui-btn edit" lay-filter="formEdit-edit" lay-submit >提交</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="provider-add-title" style="display: none">
+                <fieldset class="layui-elem-field layui-field-title" style=";margin-top:5px">
+                    <legend>新建支付订单</legend>
+                </fieldset>
+            </div>
+            <div class="provider-add-body" style="display: none">
+                <div class="layui-row" style="width:800px;margin-top: 20px">
+                    <div class="layui-col-md12">
+                        <form class="layui-form" id="formAdd">
+                            <div class="layui-form-item">
+                                <div class="layui-col-md10 layui-inline">
+                                    <label class="layui-form-label">提供者名称</label>
+                                    <div class="layui-col-md8">
+                                        <input type="text" name="name" lay-verify="required" autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-col-md10 layui-inline">
+                                    <label class="layui-form-label">key</label>
+                                    <div class="layui-col-md8">
+                                        <input type="text" name="key" lay-verify="required|capitalize|max10"  autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-col-md10 layui-inline">
+                                    <label class="layui-form-label">备注</label>
+                                    <div class="layui-col-md8">
+                                        <textarea class="layui-textarea" name="remark"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-input-block">
+                                    <a class="layui-btn add" lay-filter="formEdit-add" lay-submit >提交</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>-->
+            <div id="popups-order-add" style="display:none;padding: 15px;">
+                <form class="layui-form" id="formAdd" lay-filter="order-add">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">现场名称</label>
+                        <div class="layui-input-block">
+                            <!--<select class="order-office-select" lay-verify="required" name="orderOfficeSelect" lay-filter="select-office">
+                                <option value="">请选择</option>
+                            </select>-->
+                            <input type="text" name="name" lay-verify="required" autocomplete="off" class="layui-input">
+
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">现场代码</label>
+                        <div class="layui-input-block">
+                            <!--<select class="order-mch-select" lay-verify="required" name="orderMchSelect" lay-filter="select-mch">
+                            </select>-->
+                            <input type="text" name="code" lay-verify="required" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">现场地址</label>
+                        <div class="layui-input-block" >
+                            <!--<select class="order-opType-select" name="orderOpTypeSelect" lay-filter="select-opType">
+                                <option value="micropay">付款码支付</option>
+                            </select>-->
+                            <input type="text" name="address" lay-verify="required" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">联系方式</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="telephone" lay-verify="required" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">备注</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="note" lay-verify="required" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <!--<div class="layui-form-item">
+                        <label class="layui-form-label">收款金额</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="sum" lay-verify="required|number" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">备注</label>
+                        <div class="layui-input-block">
+                            <textarea class="layui-textarea" name="note"></textarea>
+                        </div>
+                    </div>-->
+                    <button class="layui-hide" type="button" lay-submit lay-filter="order-add-submit"></button>
+                    <button class="layui-hide" type="reset"></button>
+                </form>
+            </div>
+
+            <div id="popups-office-mch" style="display:none;padding: 15px;">
+                <!--<form class="layui-form" id="formPay" lay-filter="order-submit">
+                    <input type="text" hidden name="orderNo">
+                    <div class="layui-form-item">
+                        <div class="layui-col-md12">
+                            <input type="text" name="authCode" id="authCode" lay-verify="required" autocomplete="off" autofocus="autofocus" class="layui-input" placeholder="请扫描输入">
+                        </div>
+                    </div>
+                    <button class="layui-hide" type="button" lay-submit lay-filter="order-pay-submit"></button>
+                    <button class="layui-hide" type="reset"></button>
+                </form>-->
+                <table class="layui-hide" id="LAY_table_office_mch" lay-filter="table_office_mch" style="width:none;"></table>
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>
+
+<!-- 定义是否状态的开关 -->
+<script id="switchTpl" type="text/html">
+    <!-- 这里的 checked 的状态是-->
+    <input type="checkbox"  name = "ifKey"   value = {{d.merchantCode+d.officeCode}} lay-skin="switch" lay-text="开启|关闭" lay-filter="ifKeyDemo" title="是否关联" {{ d.isRelated == 'Y' ? 'checked' : '' }}>
+</script>
+<script src="../layuiadmin/layui/layui.js"></script>
+<!-- 业务相关js -->
+<script src='../js/biz/config.js' type="text/javascript"></script>
+<script>
+    /*layui.config({
+        base: '../layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index','system']);
+
+    //禁止用F5键
+    layui.use(['jquery'], function() {
+        var $ = layui.jquery;
+        document.onkeydown = function(e){
+            e = window.event || e;
+            var keycode = e.keyCode || e.which;
+            if(keycode == 116){
+                if(window.event){// ie
+                    try{e.keyCode = 0;}catch(e){}
+                    e.returnValue = false;
+                }else{// firefox
+                    e.preventDefault();
+                }
+                location.reload();
+            }
+        }
+    });*/
+</script>
+<script>
+    layui.config({
+        base: '../layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['element','table','index','system','jquery','form','layedit','laypage', 'layer', 'laydate','admin'], function(){
+        var table = layui.table;
+        var element = layui.element;
+        var admin = layui.admin;
+        var laypage = layui.laypage;
+        var form = layui.form;
+        var layedit = layui.layedit;
+        var laydate = layui.laydate;
+        var layer = layui.layer;
+        var $ = layui.jquery;
+        var system = layui.system;
+
+        //日期
+        /*laydate.render({
+            elem: '#search-start-time'
+        });
+        laydate.render({
+            elem: '#search-end-time'
+        });*/
+
+        tableList();
+        $('#formSearch .search').on('click',function(){
+            tableList();
+        });
+        $('#formSearch .clear').on('click',function(){
+            document.getElementById("formSearch").reset();
+        });
+        function tableList(){
+            var name = $('#formSearch').find('input[name="search-name"]').val();
+            var code = $('#formSearch').find('input[name="search-short-name"]').val();
+            // var orderNo = $('#formSearch').find('input[name="search-order-no"]').val();
+            // var status = $('#formSearch').find('select[name="search-select-status"]').val();
+            // var startAt = $('#formSearch').find('input[name="search-start-time"]').val();
+            // var endAt = $('#formSearch').find('input[name="search-end-time"]').val();
+            //方法级渲染
+            table.render({
+                elem: '#LAY_table_user'
+                ,where: {
+                    name:name,
+                    code:code
+                }
+                ,cellMinWidth: 50
+                ,method: 'post'
+                ,url:Routes.officeListUrl
+                ,cols: [
+                    [
+                        {checkbox: true, fixed: true},
+                        {field:'serialNumber', width:50, title: '序号',fixed: 'left',type:'numbers'},
+                        {field: 'id',minWidth:'0%',width:'0%',type:'space',style:"display:none"}
+                        ,{field: 'name', title: '现场名称',width:180}
+                        ,{field: 'code', title: '现场代码',width:160}
+                        ,{field: 'address', title: '现场地址',width:100}
+                        ,{field: 'telephone', title: '现场联系方式',width:90}
+                        ,{field: 'createAt', title: '创建时间',width:120}
+                        ,{field: 'note', title: '备注'}
+                        ,{fixed: 'right',title:"操作", align:'center', toolbar: '#barDemo',width:250}
+                    ]
+                ]
+                ,id: 'LAY_table_user'
+                // ,page: true //开启分页
+            });
+            // listenList();
+        }
+        table.on('tool(table_user)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'del'){
+                layer.confirm('真的删除行么', function(index){
+                    layer.close(index);
+                    admin.req({
+                        type: 'POST',
+                        async: false,
+                        data: {id:data.id},
+                        url: 'http://rpc.cw.com/admin/provider/info/del',
+                        success: function (result) {
+                            if(result.status==10000){
+                                layer.msg(result.info);
+                            }
+                            tableList();
+                        }});
+                });
+            } else if (obj.event === 'relate') {
+                // $('#formPay')[0].reset();
+                // $('#formPay').find('input[name="order"]').val();
+                // form.val("order-submit",data);
+                system.open({
+                    title: '现场关联商户'
+                    ,content: $('#popups-office-mch')
+                    ,id: 'order-pay'
+                    ,yes: function (index, layero) {
+                        // var authCode = $('#formPay').find('input[name="authCode"]').val();
+                        // console.log(authCode);
+                        // console.log(data);
+                        layero.find('[lay-submit]').click();
+                    }
+                });
+                officeTableList(data.code);
+            }
+
+            else if(obj.event === 'edit'){
+                $('#formEdit')[0].reset();
+                admin.req({
+                    type: 'POST',
+                    async: false,
+                    data: {id:data.id},
+                    url: 'http://rpc.cw.com/admin/provider/info/get',
+                    success: function (result) {
+                        if(result.status=="10000"){
+                            var editLayer = layer.open({
+                                type: 1,
+                                title: $('.provider-edit-title').html(),
+                                closeBtn: 0,
+                                maxWidth:900,
+                                shadeClose: true,
+                                skin: 'yourclass',
+                                content: $('.provider-edit-body').html()
+                            });
+                            $("#formEdit").find("input[name='id']").attr('value',result.data.id);
+                            $("#formEdit").find("input[name='name']").attr('value',result.data.name);
+                            $("#formEdit").find("input[name='key']").attr('value',result.data.key);
+                            $("#formEdit").find("input[name='status']").attr('checked',result.data.status?"checked":false);
+                            $("#formEdit").find("input[name='is_system']").attr('checked',result.data.is_system?"checked":false);
+                            $("#formEdit").find("input[name='token']").attr('value',result.data.token);
+                            $("#formEdit").find("textarea[name='remark']").text(result.data.remark);
+                            form.render();
+                            form.on('submit(formEdit-edit)', function(){
+//                                 	$("#formEdit").serializeArray();
+                                var form = $(this).parent().parent().parent();
+                                var id = form.find("input[name='id']").val();
+                                var name = form.find("input[name='name']").val();
+                                var key = form.find("input[name='key']").val();
+                                var status = form.find("input[name='status']").parent().find('em').html()=='ON'?1:0;
+                                var is_system = form.find("input[name='is_system']").parent().find('em').html()=='内置'?1:0;
+                                var remark = form.find("textarea[name='remark']").val();
+                                admin.req({
+                                    type: 'POST',
+                                    async: false,
+                                    data: {id:id,name:name,key:key,status:status,is_system:is_system,remark:remark},
+                                    url: 'http://rpc.cw.com/admin/provider/info/set',
+                                    success: function (result) {
+                                        tableList();
+                                        if(result.status==10000){
+                                            layer.msg(result.info);
+                                            layer.close(editLayer);
+                                        }
+                                    }});
+                            });
+                            $('#formEdit .reset-token').on('click',function(){
+//                                 	$("#formEdit").serializeArray();
+                                var $_this = $(this);
+                                layer.confirm('确定更新TOKEN？', function(index){
+                                    var $form = $_this.parent().parent().parent();
+                                    var id = $form.find("input[name='id']").val();
+
+                                    var $token = $_this.parent().parent().find("input[name='token']");
+                                    admin.req({
+                                        type: 'POST',
+                                        async: false,
+                                        data: {id:id},
+                                        url: 'http://rpc.cw.com/admin/provider/token/reset',
+                                        success: function (result) {
+                                            if(result.status==10000){
+                                                layer.msg(result.info);
+                                            }
+                                            $token.val(result.data['token']);
+                                            //                                     	    tableList();
+                                        }});
+                                });
+                                form.render();
+                            });
+                        }
+                    }
+                });
+            }
+        });
+
+
+        $('.add-provider').on('click',function(){
+            $('#formAdd')[0].reset();
+            system.open({
+                title: '新建收费现场资料'
+                ,content: $('#popups-order-add')
+                ,id: 'order-add'
+                ,yes: function (index, layero) {
+                    layero.find('[lay-submit]').click();
+                }
+            });
+
+            /*$.ajax({
+                type: 'POST',
+                url: Routes.userOfficelistUrl,
+                data: {},
+                beforeSend: function () {
+                    $('#popups-order-add .order-office-select').empty();
+                    $('#popups-order-add .order-mch-select').empty();
+                },
+                success: function (res) {
+                    if(res.status == '10000') {
+                        $('#popups-order-add .order-office-select').append(new Option("请选择", ""));
+                        $.each(res.data, function (index, item) {
+                            $('#popups-order-add .order-office-select').append(new Option(item.name, item.code));
+                        });
+                        layui.form.render("select");
+                    } else {
+                        system.alertF(res.msg);
+                    }
+                },
+                error: function () {
+                    system.alert('操作失败，请重试或联系管理员');
+                },
+                complete: function () {}
+            });
+
+            layui.form.render("select");
+
+            form.on('select(select-office)',function(data){
+                $.ajax({
+                    type: 'POST',
+                    url: Routes.userMerchantlistUrl,
+                    data: {officeCode:data.value},
+                    beforeSend: function () {
+                        $('#popups-order-add .order-mch-select').empty();
+                    },
+                    success: function (res) {
+                        if(res.status == '10000') {
+                            $.each(res.data, function (index, item) {
+                                $('#popups-order-add .order-mch-select').append(new Option(item.name, item.code));
+                            });
+                            layui.form.render("select");
+                        } else {
+                            system.alertF(res.msg);
+                        }
+                    },
+                    error: function () {
+                        system.alert('操作失败，请重试或联系管理员');
+                    },
+                    complete: function () {}
+                });
+
+            });*/
+
+            form.on('submit(order-add-submit)', function(data){
+
+                $.ajax({
+                    type: 'POST',
+                    url: Routes.officeCreateUrl,
+                    data: data.field,
+                    beforeSend: function () {
+                    },
+                    success: function (res) {
+                        if(res.status == '10000') {
+                            tableList();
+                            system.alertM(res.msg);
+                        } else {
+                            system.alertF(res.msg);
+                        }
+                    },
+                    error: function () {
+                        system.alert('操作失败，请重试或联系管理员');
+                    },
+                    complete: function () {
+
+                    }
+                });
+                system.layerFormClose(data.form);
+                // system.loading();
+                return false;
+            });
+
+
+
+        });
+
+
+        form.verify({
+            capitalize:function(value, item){
+                if(!(/^[A-Z][A-z0-9]*$/).test(value)){
+                    return ('请首字母大写');
+                }
+            },
+            max10:function(value){
+                if(value.length>10){
+                    return '不得超过10个字节';
+                }
+            }
+        });
+        //modal 表单中提交（确定）按钮 监听
+        form.on('submit(order-pay-submit)', function(data){
+
+            $.ajax({
+                type: 'POST',
+                url: Routes.orderSubmitUrl,
+                data: data.field,
+                beforeSend: function () {
+                },
+                success: function (res) {
+                    if(res.status == '10000') {
+                        tableList();
+                        system.alertM(res.msg);
+                    } else {
+                        system.alertF(res.msg);
+                    }
+                },
+                error: function () {
+                    system.alert('操作失败，请重试或联系管理员');
+                },
+                complete: function () {
+
+                }
+            });
+            system.layerFormClose(data.form);
+            // system.loading();
+            return false;
+        });
+
+        //input enter事件监听
+        // $("#authCode").on('keydown', function (event){
+        //     if (event.keyCode == 13) {
+        //         $('[lay-filter=order-pay-submit]').click();
+        //     }
+        // })
+        function officeTableList(officeCode){
+            var tableWidth = layui.$('.popups-office-mch').width();
+            //方法级渲染
+            table.render({
+                elem: '#LAY_table_office_mch'
+                ,where: {
+                    officeCode:officeCode
+                    // code:code
+                }
+                ,cellMinWidth: 50
+                ,method: 'post'
+                ,url:Routes.officeMchRelatedUrl
+                ,cols: [
+                    [
+                        {field:'serialNumber', width:tableWidth * 0.2, title: '序号',fixed: 'left',type:'numbers'},
+                        {field: 'officeCode',minWidth:'0%',width:'0%',templet:function() { return officeCode },style:"display:none"}
+                        ,{field: 'merchantCode',minWidth:'0%',width:'0%',type:'space',style:"display:none"}
+                        ,{field: 'merchantName', title: '商户名称',width:tableWidth * 0.4}
+                        ,{field: 'isRelated', title: '是否关联', width:tableWidth * 0.4,templet: '#switchTpl',unresize : true, sort: true, align: "center"}
+                        /*,{field: 'address', title: '现场地址',width:100}
+                        ,{field: 'telephone', title: '现场联系方式',width:90}
+                        ,{field: 'createAt', title: '创建时间',width:120}
+                        ,{field: 'note', title: '备注'}
+                        ,{fixed: 'right',title:"操作", align:'center', toolbar: '#barDemo',width:250}*/
+                    ]
+                ]
+                ,id: 'LAY_table_office_mch'
+                ,page: false //关闭分页
+                ,done: function (res) {
+                    console.log(res);
+                    for (var i in res.data) {
+                        res.data[i].officeCode = officeCode;
+                    }
+                }
+            });
+        }
+
+        //监听开关状态
+        form.on('switch(ifKeyDemo)', function(obj){
+            // 获取当前状态的Id
+            // console.log(obj.elem);
+            var id = obj.elem.value;
+            console.log(obj.value);
+            console.log(obj.elem.value);
+            var status = obj.elem.checked == true ? 'Y' : 'N';
+            var checked = obj.elem.checked;
+            obj.elem.checked = !checked;
+            form.render('checkbox');
+            //更新数据
+            // $.ajax({
+            //     type: 'POST',
+            //     dataType: 'json',
+            //     url: Routes.userUpdateUrl,
+            //     data: {"id": id, "status":status},
+            //     error: function(data){
+            //         layer.msg('操作失败');
+            //     },
+            //     success: function(data){
+            //         console.log(typeof data);
+            //         if (data.status == "10000"){
+            //             obj.elem.checked = checked;
+            //             form.render('checkbox');
+            //             layer.msg('操作成功');
+            //         } else if (data.status == "30000") {
+            //             layer.msg('您没有操作权限');
+            //         } else {
+            //             layer.msg('10000操作失败');
+            //         }
+            //     },
+            // });
+        });
+
+    });
+</script>
+</body>
+</html>
+
+
+
+
